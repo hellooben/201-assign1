@@ -20,8 +20,8 @@ test-queue :
 	gcc $(LOPTS) queue-0-0.o integer.o sll.o queue.o -o test-queue
 
 test-bst :
-	gcc $(LOPTS) -c bst.c sll.c queue.c integer.c real.c string.c tests/bst-0-0.c
-	gcc $(LOPTS) bst-0-0.o integer.o real.o string.o queue.o sll.o bst.o -o test-bst
+	gcc $(LOPTS) -c bst.c sll.c queue.c integer.c real.c string.c tests/bst-0-5.c
+	gcc $(LOPTS) bst-0-5.o integer.o real.o string.o queue.o sll.o bst.o -o test-bst
 
 test-heap :
 	gcc $(LOPTS) -c heap.c bst.c sll.c queue.c integer.c tests/heap-0-0.c

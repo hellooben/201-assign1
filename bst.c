@@ -358,13 +358,13 @@ extern void
 statisticsBST(BST *t,FILE *fp) {
     BSTNODE *current = t->root;
     if (current == NULL) {
-        printf("Nodes: %d\nMinimum depth: %d\nMaximum depth: %d\n", 0, -1, -1);
+        fprintf(fp, "Nodes: %d\nMinimum depth: %d\nMaximum depth: %d\n", 0, -1, -1);
         return;
     }
     else {
         int min = BSTminimum(t->root);
         int max = BSTmaximum(t->root);
-        printf("Nodes: %d\nMinimum depth: %d\nMaximum depth: %d\n", sizeBST(t), min, max);
+        fprintf(fp, "Nodes: %d\nMinimum depth: %d\nMaximum depth: %d\n", sizeBST(t), min, max);
 
         return;
     }
@@ -427,8 +427,6 @@ displayBSTdebug(BST *t,FILE *fp) {
         QUEUE *newq = newQUEUE(t->display, t->free);
         QUEUE *oldq = newQUEUE(t->display, t->free);
         levelOrder(t, t->root, fp, newq, oldq);
-        //printf("\n");
-        printf("queue sizes:\nnew: %d\nold: %d\n", sizeQUEUE(newq), sizeQUEUE(oldq));
         freeQUEUE(newq);
         freeQUEUE(oldq);
         return;
@@ -467,8 +465,6 @@ levelOrder(BST *t, BSTNODE *node, FILE *fp, QUEUE *newq, QUEUE *oldq) {
     for (int i=0; i<sizeQUEUE(oldq); i++) {
         dequeue(oldq);
     }
-    //freeQUEUE(oldq);
-    //freeQUEUE(newq);
     return;
 }
 
