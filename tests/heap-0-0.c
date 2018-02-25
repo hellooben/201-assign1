@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "bst.h"
-#include "integer.h"
-#include "real.h"
-#include "string.h"
-#include "stack.h"
-#include "queue.h"
-#include "heap.h"
+#include "../bst.h"
+#include "../integer.h"
+#include "../real.h"
+#include "../string.h"
+#include "../stack.h"
+#include "../queue.h"
+#include "../heap.h"
 
 extern void srandom(unsigned int);
 extern long int random(void);

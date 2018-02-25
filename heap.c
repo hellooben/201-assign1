@@ -13,7 +13,7 @@ struct heap
     BST *bstree;
     BSTNODE *root;
     //QUEUE *queue;
-    //STACK *stack;
+    STACK *stack;
     int size;
     void (*display)(void *,FILE *);          //display
     int (*compare)(void *,void *);
@@ -29,7 +29,7 @@ newHEAP(
         assert(tree!=0);
         tree->bstree = newBST(d, c, NULL, f);
         //tree->queue = newQUEUE(d, f);
-        //tree->stack = newSTACK(d, f);
+        tree->stack = newSTACK(d, f);
         tree->size = 0;
         tree->root = NULL;
         tree->display = d;
@@ -41,15 +41,15 @@ newHEAP(
 extern void
 insertHEAP(HEAP *h,void *value) {
     //BSTNODE *new = newBSTNODE(value);
-    insertBST(h->bstree, value);
-    //push(h->stack, new);
+    //insertBST(h->bstree, value);
+    push(h->stack, new);
     h->size ++;
     return;
 }
 
 extern void
 buildHEAP(HEAP *h) {
-    for (int i=sizeHEAP(h)/2 - 1; i>=0; i--) {
+    for (int i=sizeSTACK(H->stack)/2; i>0; i--) {
         heapify(h, h->root);
     }
     h->root = getBSTroot(h->bstree);

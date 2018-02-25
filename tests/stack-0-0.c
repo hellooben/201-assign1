@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "stack.h"
-#include "dll.h"
-#include "integer.h"
+#include "../stack.h"
+#include "../dll.h"
+#include "../integer.h"
 
 extern void srandom(unsigned int);
 extern long int random(void);

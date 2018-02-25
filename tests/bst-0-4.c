@@ -38,25 +38,20 @@ main(void)
         {
         int j = random() % 15;
         INTEGER *a = newINTEGER(j);
-        printf("looking for: ");
-        displayINTEGER(a, stdout);
-        printf("\n");
+        //printf("looking for: ");
+        //displayINTEGER(a, stdout);
+        //printf("\n");
         if (findBST(p,a) != 0) {
-            printf("found this: ");
-            displayINTEGER(a, stdout);
-            printf("\n");
+            //printf("found this: ");
+            //displayINTEGER(a, stdout);
+            //printf("\n");
             freeBSTNODE(deleteBST(p,a),freeINTEGER);
         }
-        else {
-            printf("DIDNT FIND THIS: ");
-            displayINTEGER(a, stdout);
-            printf("\n");
-        }
+
         freeINTEGER(a);
         }
     if (sizeBST(p) < 200)
         {
-            printf("welcome\n");
         printf("pre-order: ");
         displayBST(p,stdout);
         printf("\n");
