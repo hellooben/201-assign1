@@ -112,9 +112,9 @@ setBSTNODEparent(BSTNODE *n,BSTNODE *replacement) {
 }
 
 extern void
-freeBSTNODE(BSTNODE *n,void (*free)(void *)) {
-    if (free != NULL) {
-        free(n->data);
+freeBSTNODE(BSTNODE *n,void (*f)(void *)) {
+    if (f != NULL) {
+        f(n->data);
         free(n);
         return;
     }
@@ -127,7 +127,7 @@ freeBSTNODE(BSTNODE *n,void (*free)(void *)) {
 
 struct bst
 {
-    QUEUE *list;
+    //QUEUE *list;
     int size;
     BSTNODE *root;
     void (*display)(void *,FILE *);          //display
@@ -143,7 +143,7 @@ void (*s)(BSTNODE *,BSTNODE *),
 void (*f)(void *)) {
     BST *tree = malloc(sizeof(BST));
     assert(tree!=0);
-    tree->list = newQUEUE(d, f);
+    //tree->list = newQUEUE(d, f);
     tree->size = 0;
     tree->root = NULL;
     tree->display = d;
@@ -189,7 +189,7 @@ insertBST(BST *t,void *value) {
         assert(new!=0);
         t->root = new;
         t->size ++;
-        enqueue(t->list, new);
+        //enqueue(t->list, new);
         return new;
     }
     else {
@@ -198,7 +198,7 @@ insertBST(BST *t,void *value) {
         BSTNODE *returnable = binaryInsert(t, t->root, t->root, value);
         assert(returnable!=0);
         t->size ++;
-        enqueue(t->list, returnable);
+        //enqueue(t->list, returnable);
         return returnable;
     }
 }
@@ -428,8 +428,9 @@ displayBSTdebug(BST *t,FILE *fp) {
         QUEUE *oldq = newQUEUE(t->display, t->free);
         levelOrder(t, t->root, fp, newq, oldq);
         //printf("\n");
-        //freeQUEUE(newq);
-        //freeQUEUE(oldq);
+        printf("queue sizes:\nnew: %d\nold: %d\n", sizeQUEUE(newq), sizeQUEUE(oldq));
+        freeQUEUE(newq);
+        freeQUEUE(oldq);
         return;
     }
 }
@@ -458,11 +459,16 @@ levelOrder(BST *t, BSTNODE *node, FILE *fp, QUEUE *newq, QUEUE *oldq) {
             node = dequeue(newq);
             t->display(node->data, fp);
             enqueue(oldq, node);
-            if (x <= newsize-1) {printf(" ");}
+            if (x < newsize-1) {printf(" ");}
             j ++;
         }
         printf("\n");
     }
+    for (int i=0; i<sizeQUEUE(oldq); i++) {
+        dequeue(oldq);
+    }
+    //freeQUEUE(oldq);
+    //freeQUEUE(newq);
     return;
 }
 
@@ -493,12 +499,12 @@ freeRecursive(BSTNODE *node, BST *t) {
     BSTNODE *temp = node;
     freeBSTNODE(node, t->free);
 
-    if (temp->right != NULL) {
+    //if (temp->right != NULL) {
         freeRecursive(temp->right, t);
-    }
-    if (temp->left != NULL) {
+    //}
+    //if (temp->left != NULL) {
         freeRecursive(temp->left, t);
-    }
+    //}
 
 }
 
