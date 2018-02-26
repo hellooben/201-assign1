@@ -495,12 +495,12 @@ freeRecursive(BSTNODE *node, BST *t) {
     BSTNODE *temp = node;
     freeBSTNODE(node, t->free);
 
-    //if (temp->right != NULL) {
+    if (temp->right != NULL) {
         freeRecursive(temp->right, t);
-    //}
-    //if (temp->left != NULL) {
+    }
+    if (temp->left != NULL) {
         freeRecursive(temp->left, t);
-    //}
+    }
 
 }
 

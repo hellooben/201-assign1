@@ -1,5 +1,7 @@
 OBJS = integer.o real.o string.o sll.o dll.o stack.o queue.o heap.o a.out bst.o sll-*-*.o dll-*-*.o stack-*-*.o queue-*-*.o heap-*-*.o
 LOPTS = -Wall -Wextra -std=c99
+EXTRAS = integer.c real.c string.c sll.c dll.c stack.c queue.c
+OEXTRAS = integer.o real.o string.o sll.o dll.o stack.o queue.o
 
 all : test-sll test-dll test-stack test-queue test-bst
 
@@ -20,12 +22,12 @@ test-queue :
 	gcc $(LOPTS) queue-0-0.o integer.o sll.o queue.o -o test-queue
 
 test-bst :
-	gcc $(LOPTS) -c bst.c sll.c queue.c integer.c real.c string.c tests/bst-0-5.c
-	gcc $(LOPTS) bst-0-5.o integer.o real.o string.o queue.o sll.o bst.o -o test-bst
+	gcc $(LOPTS) -c bst.c $(EXTRAS) tests/bst-0-4.c
+	gcc $(LOPTS) bst-0-4.o $(OEXTRAS) bst.o -o test-bst
 
 test-heap :
-	gcc $(LOPTS) -c heap.c bst.c sll.c queue.c integer.c tests/heap-0-0.c
-	gcc $(LOPTS) heap-0-0.o integer.o queue.o sll.o bst.o heap.o -o test-heap
+	gcc $(LOPTS) -c heap.c bst.c $(EXTRAS) tests/heap-0-0.c
+	gcc $(LOPTS) heap-0-0.o $(OEXTRAS) bst.o heap.o -o test-heap
 
 valgrind :
 	echo testing singly-linked list

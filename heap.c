@@ -1,19 +1,21 @@
 #include "heap.h"
 #include "bst.h"
 #include "sll.h"
+#include "stack.h"
 #include "queue.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
 void heapify(HEAP *h, BSTNODE *node);
+BSTNODE *getSibling(HEAP *h, BSTNODE *node);
 
 struct heap
 {
     BST *bstree;
     BSTNODE *root;
-    //QUEUE *queue;
-    STACK *stack;
+    QUEUE *queue;
+    //STACK *stack;
     int size;
     void (*display)(void *,FILE *);          //display
     int (*compare)(void *,void *);
@@ -28,8 +30,8 @@ newHEAP(
         HEAP *tree = malloc(sizeof(HEAP));
         assert(tree!=0);
         tree->bstree = newBST(d, c, NULL, f);
-        //tree->queue = newQUEUE(d, f);
-        tree->stack = newSTACK(d, f);
+        tree->queue = newQUEUE(d, f);
+        //tree->stack = newSTACK(d, f);
         tree->size = 0;
         tree->root = NULL;
         tree->display = d;
@@ -40,19 +42,29 @@ newHEAP(
 
 extern void
 insertHEAP(HEAP *h,void *value) {
-    //BSTNODE *new = newBSTNODE(value);
-    //insertBST(h->bstree, value);
-    push(h->stack, new);
+    BSTNODE *new = newBSTNODE(value);
+    insertBST(h->bstree, value);
+    enqueue(h->queue, new);
     h->size ++;
     return;
 }
 
 extern void
 buildHEAP(HEAP *h) {
-    for (int i=sizeSTACK(H->stack)/2; i>0; i--) {
-        heapify(h, h->root);
+    if (sizeQUEUE(h->queue) == 0) {
+        return;
     }
-    h->root = getBSTroot(h->bstree);
+    if (sizeQUEUE(h->queue) == 1) {
+        h->root = dequeue(h->queue);
+        return;
+    }
+    else {
+        for (int i=sizeQUEUE(h->queue)/2; i>0; i--) {
+            BSTNODE *temp = dequeue(h->queue);
+            heapify(h, temp);
+        }
+        //h->root = getBSTroot(h->bstree);
+    }
     return;
 }
 
@@ -98,21 +110,31 @@ freeHEAP(HEAP *h) {
 
 void
 heapify(HEAP *h, BSTNODE *node) {
-    if (node == NULL) {return;}
-    BSTNODE *left = getBSTNODEleft(node);
-    BSTNODE *right = getBSTNODEright(node);
-    BSTNODE *key = node;
-    if (h->compare(getBSTNODEvalue(left), getBSTNODEvalue(node)) > 0) {
-        key = left;
+    if (sizeheap(h) == 0) {
+        h->root = node;
+        return;
     }
-    if (h->compare(getBSTNODEvalue(right), getBSTNODEvalue(key)) > 0) {
-        key = right;
+    else {
+
     }
-    if (h->compare(getBSTNODEvalue(key), getBSTNODEvalue(node)) != 0) {
-        void *data = getBSTNODEvalue(node);
-        setBSTNODEvalue(node, getBSTNODEvalue(key));
-        setBSTNODEvalue(key, data);
-        heapify(h, key);
+}
+
+BSTNODE *
+getSibling(HEAP *h, BSTNODE *node) {
+    if (node->parent != NULL) {
+        BSTNODE *par = node->parent;
+        if (par->left != NULL) {
+            BSTNODE *l = par->left;
+        }
+        if (par->right != NULL) {
+            BSTNODE *r = par->right;
+        }
+        if (h->compare(node->data, l->data) == 0) {
+            return r;
+        }
+        else {
+            return l;
+        }
     }
-    //else {return;}
+    else {return node;}
 }
