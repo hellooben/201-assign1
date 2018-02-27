@@ -20,6 +20,7 @@ main(void)
     insertHEAP(p,newINTEGER(3));
     insertHEAP(p,newINTEGER(0));
     insertHEAP(p,newINTEGER(2));
+    //displayHEAP(p, stdout);
     buildHEAP(p);
     printf("heap: ");
     displayHEAP(p,stdout);

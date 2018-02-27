@@ -15,7 +15,7 @@ struct heap
     BST *bstree;
     BSTNODE *root;
     QUEUE *queue;
-    //STACK *stack;
+    STACK *stack;
     int size;
     void (*display)(void *,FILE *);          //display
     int (*compare)(void *,void *);
@@ -45,6 +45,25 @@ insertHEAP(HEAP *h,void *value) {
     BSTNODE *new = newBSTNODE(value);
     enqueue(h->queue, new);
     push(h->stack, new);
+    if (getBSTroot(h->bstree) == NULL) {
+        setBSTroot(h->bstree, new);
+        setBSTsize(h->bstree, sizeBST(h->bstree)+1);
+        return;
+    }
+    else if (getBSTNODEleft(getBSTroot(h->bstree)) != NULL) {
+        setBSTNODEleft(new, getBSTroot(h->bstree));
+        setBSTNODEparent(getBSTroot(h->bstree), new);
+        setBSTroot(h->bstree, new);
+        setBSTsize(h->bstree, sizeBST(h->bstree)+1);
+        return;
+    }
+    else {
+        setBSTNODEright(new, getBSTroot(h->bstree));
+        setBSTNODEparent(getBSTroot(h->bstree), new);
+        setBSTroot(h->bstree, new);
+        setBSTsize(h->bstree, sizeBST(h->bstree)+1);
+        return;
+    }
     h->size ++;
     return;
 }
@@ -110,7 +129,7 @@ freeHEAP(HEAP *h) {
 
 void
 heapify(HEAP *h, BSTNODE *node) {
-    if (sizeheap(h) == 0) {
+    if (sizeHEAP(h) == 0) {
         h->root = node;
         return;
     }
@@ -119,6 +138,7 @@ heapify(HEAP *h, BSTNODE *node) {
     }
 }
 
+/*
 BSTNODE *
 getSibling(HEAP *h, BSTNODE *node) {
     if (node->parent != NULL) {
@@ -138,3 +158,4 @@ getSibling(HEAP *h, BSTNODE *node) {
     }
     else {return node;}
 }
+*/
