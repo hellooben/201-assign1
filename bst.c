@@ -462,9 +462,11 @@ levelOrder(BST *t, BSTNODE *node, FILE *fp, QUEUE *newq, QUEUE *oldq) {
         }
         printf("\n");
     }
-    for (int i=0; i<sizeQUEUE(oldq); i++) {
+    //printf("SIZE OF THE QUEUES:\nold: %d\nnew: %d\n", sizeQUEUE(oldq), sizeQUEUE(newq));
+    for (int i=0; i<=sizeQUEUE(oldq); i++) {
         dequeue(oldq);
     }
+    //printf("SIZE OF THE QUEUES:\nold: %d\nnew: %d\n", sizeQUEUE(oldq), sizeQUEUE(newq));
     return;
 }
 
