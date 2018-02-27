@@ -31,7 +31,7 @@ newHEAP(
         assert(tree!=0);
         tree->bstree = newBST(d, c, NULL, f);
         tree->queue = newQUEUE(d, f);
-        //tree->stack = newSTACK(d, f);
+        tree->stack = newSTACK(d, f);
         tree->size = 0;
         tree->root = NULL;
         tree->display = d;
@@ -43,8 +43,8 @@ newHEAP(
 extern void
 insertHEAP(HEAP *h,void *value) {
     BSTNODE *new = newBSTNODE(value);
-    insertBST(h->bstree, value);
     enqueue(h->queue, new);
+    push(h->stack, new);
     h->size ++;
     return;
 }

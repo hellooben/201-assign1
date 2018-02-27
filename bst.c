@@ -54,15 +54,11 @@ getBSTNODEleft(BSTNODE *n) {
 
 extern void
 setBSTNODEleft(BSTNODE *n,BSTNODE *replacement) {
-    BSTNODE *curr = getBSTNODEleft(n);
-    if (curr != NULL) {
-        n->left = replacement;
+    n->left = replacement;
         //replacement->parent = n;
         //replacement->right = getBSTNODEright(curr);
         //replacement->left = getBSTNODEleft(curr);
-        return;
-    }
-    else {return;}
+    return;
 }
 
 extern BSTNODE *
@@ -77,15 +73,11 @@ getBSTNODEright(BSTNODE *n) {
 
 extern void
 setBSTNODEright(BSTNODE *n,BSTNODE *replacement) {
-    BSTNODE *curr = getBSTNODEright(n);
-    if (curr != NULL) {
-        n->right = replacement;
+    n->right = replacement;
         //replacement->parent = n;
         //replacement->right = getBSTNODEright(curr);
         //replacement->left = getBSTNODEleft(curr);
-        return;
-    }
-    else {return;}
+    return;
 }
 
 extern BSTNODE *
@@ -100,15 +92,11 @@ getBSTNODEparent(BSTNODE *n) {
 
 extern void
 setBSTNODEparent(BSTNODE *n,BSTNODE *replacement) {
-    BSTNODE *curr = getBSTNODEparent(n);
-    if (curr != NULL) {
-        n->parent = replacement;
+    n->parent = replacement;
         //replacement->parent = getBSTNODEparent(curr);
         //replacement->right = getBSTNODEright(curr);
         //replacement->left = getBSTNODEleft(curr);
-        return;
-    }
-    else {return;}
+    return;
 }
 
 extern void
@@ -165,15 +153,11 @@ getBSTroot(BST *t) {
 
 extern void
 setBSTroot(BST *t,BSTNODE *replacement) {
-    BSTNODE *curr = getBSTroot(t);
-    if (curr != NULL) {
-        t->root = replacement;
+    t->root = replacement;
         //replacement->right = curr->right;
         //replacement->left = curr->left;
         //replacement->parent = NULL;
-        return;
-    }
-    else {return;}
+    return;
 }
 
 extern void
