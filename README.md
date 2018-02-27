@@ -1,4 +1,6 @@
 # 201-assign1
+Check out the project spec <a target="_blank" href="http://beastie.cs.ua.edu/cs201/assign1.html">here</a>.
+
 The second project for my Spring 2018 CS class, Data Structures and Algorithms. It contains classes and headers for a binary search tree and a heap.
 
 ### Header/Class Files I wrote are:
