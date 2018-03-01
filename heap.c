@@ -14,7 +14,8 @@ struct heap
 {
     BST *bstree;
     BSTNODE *root;
-    QUEUE *queue;
+    QUEUE *insertQ;
+    QUEUE *buildQ;
     STACK *stack;
     int size;
     void (*display)(void *,FILE *);          //display
@@ -30,7 +31,8 @@ newHEAP(
         HEAP *tree = malloc(sizeof(HEAP));
         assert(tree!=0);
         tree->bstree = newBST(d, c, NULL, f);
-        tree->queue = newQUEUE(d, f);
+        tree->insertQ = newQUEUE(d, f);
+        tree->buildQ = newQUEUE(d, f);
         tree->stack = newSTACK(d, f);
         tree->size = 0;
         tree->root = NULL;
@@ -43,46 +45,52 @@ newHEAP(
 extern void
 insertHEAP(HEAP *h,void *value) {
     BSTNODE *new = newBSTNODE(value);
-    enqueue(h->queue, new);
-    push(h->stack, new);
-    if (getBSTroot(h->bstree) == NULL) {
+    BSTNODE *rt = getBSTroot(h->bstree);
+    printf("got root\n");
+
+    if (rt == NULL) {
+        printf("setting root\n");
         setBSTroot(h->bstree, new);
         setBSTsize(h->bstree, sizeBST(h->bstree)+1);
-        return;
-    }
-    else if (getBSTNODEleft(getBSTroot(h->bstree)) != NULL) {
-        setBSTNODEleft(new, getBSTroot(h->bstree));
-        setBSTNODEparent(getBSTroot(h->bstree), new);
-        setBSTroot(h->bstree, new);
-        setBSTsize(h->bstree, sizeBST(h->bstree)+1);
-        return;
+        //return;
     }
     else {
-        setBSTNODEright(new, getBSTroot(h->bstree));
-        setBSTNODEparent(getBSTroot(h->bstree), new);
-        setBSTroot(h->bstree, new);
-        setBSTsize(h->bstree, sizeBST(h->bstree)+1);
-        return;
+        BSTNODE *temp = peekQUEUE(h->insertQ);
+        printf("node ready to be dequeued: ");
+        h->display(getBSTNODEvalue(temp), stdout);
+        printf("\n");
+
+        if (getBSTNODEleft(temp) == NULL) {
+            printf("left is null\n");
+            setBSTNODEleft(temp, new);
+            setBSTNODEparent(new, temp);
+            setBSTsize(h->bstree, sizeBST(h->bstree)+1);
+        }
+        else if (getBSTNODEright(temp) == NULL) {
+            printf("right is null\n");
+            setBSTNODEright(temp, new);
+            setBSTNODEparent(new, temp);
+            setBSTsize(h->bstree, sizeBST(h->bstree)+1);
+        }
+        if (getBSTNODEleft(temp) != NULL && getBSTNODEright(temp) != NULL) {
+            printf("both children are present, dequeueing\n");
+            dequeue(h->insertQ);
+        }
     }
+    enqueue(h->insertQ, new);
+    enqueue(h->buildQ, new);
+    push(h->stack, new);
+
     h->size ++;
     return;
 }
 
 extern void
 buildHEAP(HEAP *h) {
-    if (sizeQUEUE(h->queue) == 0) {
-        return;
-    }
-    if (sizeQUEUE(h->queue) == 1) {
-        h->root = dequeue(h->queue);
-        return;
-    }
-    else {
-        for (int i=sizeQUEUE(h->queue)/2; i>0; i--) {
-            BSTNODE *temp = dequeue(h->queue);
-            heapify(h, temp);
-        }
-        //h->root = getBSTroot(h->bstree);
+    //displaySTACK(h->stack, stdout);
+    for (int i=sizeQUEUE(h->buildQ)/2; i>0; i--) {
+        BSTNODE *temp = dequeue(h->buildQ);
+        heapify(h, temp);
     }
     return;
 }
