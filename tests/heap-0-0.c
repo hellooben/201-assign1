@@ -17,12 +17,15 @@ main(void)
     srandom(1);
     //simple INTEGER test of HEAP
     HEAP *p = newHEAP(displayINTEGER,compareINTEGER,freeINTEGER);
+    insertHEAP(p, newINTEGER(120));
     insertHEAP(p,newINTEGER(3));
     insertHEAP(p,newINTEGER(0));
     insertHEAP(p,newINTEGER(2));
-    //insertHEAP(p,newINTEGER(1));
-    //insertHEAP(p,newINTEGER(9));
-    //insertHEAP(p,newINTEGER(6));
+    insertHEAP(p,newINTEGER(1));
+    insertHEAP(p,newINTEGER(9));
+    insertHEAP(p,newINTEGER(6));
+    insertHEAP(p,newINTEGER(12));
+    insertHEAP(p,newINTEGER(4));
     displayHEAPdebug(p, stdout);
     displayHEAP(p, stdout);
     printf("\n");

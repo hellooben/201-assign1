@@ -8,6 +8,7 @@
 #include <assert.h>
 
 void heapify(HEAP *h, BSTNODE *node);
+//void heapifydown(HEAP *h, BSTNODE *node);
 BSTNODE *getSibling(HEAP *h, BSTNODE *node);
 
 struct heap
@@ -88,8 +89,17 @@ insertHEAP(HEAP *h,void *value) {
 extern void
 buildHEAP(HEAP *h) {
     //displaySTACK(h->stack, stdout);
-    for (int i=sizeQUEUE(h->buildQ)/2; i>0; i--) {
-        BSTNODE *temp = dequeue(h->buildQ);
+    for (int i=sizeSTACK(h->stack); i>0; i--) {
+        BSTNODE *temp = pop(h->stack);
+        /*
+        if (i%2 == 0) {
+            temp = pop(h->stack);
+        }
+        else {temp = dequeue(h->buildQ);}
+        */
+        printf("Bubbling ");
+        h->display(getBSTNODEvalue(temp), stdout);
+        printf("\n");
         heapify(h, temp);
     }
     return;
@@ -137,12 +147,83 @@ freeHEAP(HEAP *h) {
 
 void
 heapify(HEAP *h, BSTNODE *node) {
-    if (sizeHEAP(h) == 0) {
-        h->root = node;
+    if (getBSTNODEparent(node) == NULL) {
+        //heapifydown(h, node);
         return;
     }
     else {
+        BSTNODE *par = getBSTNODEparent(node);
+        printf("Has a parent\nNode: ");
+        h->display(getBSTNODEvalue(node), stdout);
+        printf("\n");
+        printf("Parent: ");
+        h->display(getBSTNODEvalue(par), stdout);
+        printf("\n");
 
+        if (h->compare(getBSTNODEvalue(node), getBSTNODEvalue(par)) < 0) {
+            printf("parent is greater\n");
+            void *data = getBSTNODEvalue(par);
+            setBSTNODEvalue(par, getBSTNODEvalue(node));
+            setBSTNODEvalue(node, data);
+
+            printf("AFTER SWITCHING: Node: ");
+            h->display(getBSTNODEvalue(node), stdout);
+            printf("\n");
+            printf("Parent: ");
+            h->display(getBSTNODEvalue(par), stdout);
+            printf("\n");
+
+            node = par; // this is the problem
+            h->display(getBSTNODEvalue(node), stdout);
+            if (getBSTNODEparent(node) != NULL) {
+                par = getBSTNODEparent(node);
+                h->display(getBSTNODEvalue(par), stdout);
+            }
+            printf("hi\n");
+            while (par != NULL && h->compare(getBSTNODEvalue(node), getBSTNODEvalue(par)) < 0) {
+                printf("in the while\n");
+                //par = getBSTNODEparent(node);
+                void *data = getBSTNODEvalue(par);
+                setBSTNODEvalue(par, getBSTNODEvalue(node));
+                setBSTNODEvalue(node, data);
+
+                printf("AFTER SWITCHING: Node: ");
+                h->display(getBSTNODEvalue(node), stdout);
+                printf("\n");
+                printf("Parent: ");
+                h->display(getBSTNODEvalue(par), stdout);
+                printf("\n");
+
+                node = par;
+                par = getBSTNODEparent(node);
+
+            }
+            printf("out of the while\n");
+        }
+        printf("DONE HEAPIFYING\n\n");
+        return;
+    }
+}
+
+
+void
+heapifydown(HEAP *h, BSTNODE *node) {
+    if (getBSTNODEleft(node) == NULL && getBSTNODEright(node) == NULL) {
+        return;
+    }
+    else {
+        BSTNODE *left = NULL;
+        BSTNODE *right = NULL;
+        BSTNODE *extreme = NULL;
+        if (getBSTNODEleft(node) != NULL) {left = getBSTNODEleft(node);}
+        if (getBSTNODEright(node) != NULL) {right = getBSTNODEright(node);}
+
+        if (h->compare(getBSTNODEvalue(left), getBSTNODEvalue(right)) < 0) {
+            extreme = left;
+        }
+        else if (h->compare(getBSTNODEvalue(left), getBSTNODEvalue(right)) > 0) {
+            extreme = right;
+        }
     }
 }
 
