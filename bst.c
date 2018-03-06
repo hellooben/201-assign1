@@ -208,15 +208,15 @@ binaryFind(BST *t, BSTNODE *node, void *value) {
         return node;
     }
     else if (t->compare(node->data, value) > 0) {
-        //printf("looking at: ");
-        //t->display(node->data, stdout);
-        //printf(". went left\n");
+        // printf("looking at: ");
+        // t->display(node->data, stdout);
+        // printf(". went left\n");
         return binaryFind(t, node->left, value);
     }
     else if (t->compare(node->data, value) < 0) {
-        //printf("looking at: ");
-        //t->display(node->data, stdout);
-        //printf(". went right\n");
+        // printf("looking at: ");
+        // t->display(node->data, stdout);
+        // printf(". went right\n");
         return binaryFind(t, node->right, value);
     }
     else {
@@ -446,7 +446,9 @@ levelOrder(BST *t, BSTNODE *node, FILE *fp, QUEUE *newq, QUEUE *oldq) {
         }
         printf("\n");
     }
-    for (int i=0; i<=sizeQUEUE(oldq); i++) {
+    while (sizeQUEUE(oldq) > 0) {
+    // for (int i=0; i<=sizeQUEUE(oldq); i++) {
+        // printf("soize: %d\n", sizeQUEUE(oldq));
         dequeue(oldq);
     }
     return;
@@ -475,16 +477,24 @@ freeRecursive(BSTNODE *node, BST *t) {
     if (node == NULL) {
         return;
     }
-
     BSTNODE *temp = node;
-    freeBSTNODE(node, t->free);
+    if (temp->right != NULL && t->free != NULL) {
+        //t->display(getBSTNODEvalue(temp), stdout);
+        //printf("'s right is present'\n");
+        freeRecursive(getBSTNODEright(temp), t);
+    }
+    if (temp->left != NULL && t->free != NULL) {
+        //t->display(getBSTNODEvalue(temp), stdout);
+        //printf("'s left is present'\n");
+        freeRecursive(getBSTNODEleft(temp), t);
+    }
+    if (t->free != NULL) {
+        //t->display(getBSTNODEvalue(temp), stdout);
+        //printf("\n");
+        freeBSTNODE(temp, t->free);
+    }
 
-    if (temp->right != NULL) {
-        freeRecursive(temp->right, t);
-    }
-    if (temp->left != NULL) {
-        freeRecursive(temp->left, t);
-    }
+
 
 }
 

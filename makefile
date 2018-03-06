@@ -22,8 +22,8 @@ test-queue :
 	gcc $(LOPTS) queue-0-0.o integer.o sll.o queue.o -o test-queue
 
 test-bst :
-	gcc $(LOPTS) -c bst.c $(EXTRAS) tests/bst-0-5.c
-	gcc $(LOPTS) bst-0-5.o $(OEXTRAS) bst.o -o test-bst
+	gcc $(LOPTS) -c bst.c $(EXTRAS) tests/bst-2-10.c
+	gcc $(LOPTS) bst-2-10.o $(OEXTRAS) bst.o -o test-bst
 
 test-heap :
 	gcc $(LOPTS) -c heap.c bst.c $(EXTRAS) tests/heap-0-0.c
