@@ -18,13 +18,13 @@ newINTEGER(int x)
     return p;
     }
 
-int 
+int
 getINTEGER(INTEGER *v)
     {
     return v->value;
     }
 
-int 
+int
 setINTEGER(INTEGER *v,int x)
     {
     int old = v->value;
@@ -32,16 +32,22 @@ setINTEGER(INTEGER *v,int x)
     return old;
     }
 
-void 
+void
 displayINTEGER(void *v,FILE *fp)
     {
     fprintf(fp,"%d",getINTEGER((INTEGER *) v));
     }
 
-int 
+int
 compareINTEGER(void *v,void *w)
     {
     return getINTEGER(v) - getINTEGER(w);
+    }
+
+int
+rcompareINTEGER(void *v,void *w)
+    {
+    return getINTEGER(w) - getINTEGER(v);
     }
 
 void

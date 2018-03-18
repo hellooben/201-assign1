@@ -3,20 +3,21 @@
 #include "sll.h"
 #include "stack.h"
 #include "queue.h"
+#include "integer.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
 void heapify(HEAP *h, BSTNODE *node);
 //void heapifydown(HEAP *h, BSTNODE *node);
-BSTNODE *getSibling(HEAP *h, BSTNODE *node);
+//BSTNODE *getSibling(HEAP *h, BSTNODE *node);
+void rebuild(HEAP *h, BSTNODE *node);
 
 struct heap
 {
     BST *bstree;
     BSTNODE *root;
-    QUEUE *insertQ;
-    QUEUE *buildQ;
+    QUEUE *queue;
     STACK *stack;
     int size;
     void (*display)(void *,FILE *);          //display
@@ -31,9 +32,8 @@ newHEAP(
     void (*f)(void *)) {
         HEAP *tree = malloc(sizeof(HEAP));
         assert(tree!=0);
-        tree->bstree = newBST(d, c, NULL, f);
-        tree->insertQ = newQUEUE(d, f);
-        tree->buildQ = newQUEUE(d, f);
+        tree->bstree = newBST(d, compareINTEGER, NULL, f);
+        tree->queue = newQUEUE(d, f);
         tree->stack = newSTACK(d, f);
         tree->size = 0;
         tree->root = NULL;
@@ -43,6 +43,23 @@ newHEAP(
         return tree;
 }
 
+extern void
+insertHEAP(HEAP *h,void *value) {
+    BSTNODE *new = insertBST(h->bstree, value);
+    // printf("ROOT: ");
+    // h->display(getBSTNODEvalue(getBSTroot(h->bstree)), stdout);
+    // printf("\n");
+    enqueue(h->queue, new);
+    // printf("QQQQQQ: ");
+    // h->display(getBSTNODEvalue(peekQUEUE(h->queue)), stdout);
+    // printf("\n");
+    push(h->stack, new);
+    h->size ++;
+    return;
+}
+
+
+/*
 extern void
 insertHEAP(HEAP *h,void *value) {
     BSTNODE *new = newBSTNODE(value);
@@ -85,21 +102,20 @@ insertHEAP(HEAP *h,void *value) {
     h->size ++;
     return;
 }
+*/
+
 
 extern void
 buildHEAP(HEAP *h) {
     //displaySTACK(h->stack, stdout);
-    for (int i=sizeSTACK(h->stack); i>0; i--) {
+    int size = sizeSTACK(h->stack);
+    //heapify(h, peekSTACK(h->stack));
+    for (int i=0; i<size; i++) {
         BSTNODE *temp = pop(h->stack);
-        /*
-        if (i%2 == 0) {
-            temp = pop(h->stack);
-        }
-        else {temp = dequeue(h->buildQ);}
-        */
-        printf("Bubbling ");
-        h->display(getBSTNODEvalue(temp), stdout);
-        printf("\n");
+        // printf("TEMP: ");
+        // h->display(getBSTNODEvalue(temp), stdout);
+        // printf("\n");
+
         heapify(h, temp);
     }
     return;
@@ -115,9 +131,81 @@ peekHEAP(HEAP *h) {
 
 extern void *
 extractHEAP(HEAP *h) {
-    BSTNODE *returnable = deleteBST(h->bstree, getBSTNODEvalue(getBSTroot(h->bstree)));
+    BSTNODE *temp = dequeue(h->queue);
+    void *returnable = getBSTNODEvalue(temp);
+    // printf("TEMP: ");
+    // h->display(returnable, stdout);
+    // printf("\n");
+
+    temp = swapToLeafBST(h->bstree, temp);
+    pruneLeafBST(h->bstree, temp);
+    //displayBST(h->bstree, stdout);
+    BSTNODE *newTemp = getBSTroot(h->bstree);
+    //rebuild(h, newTemp);
+    heapify(h, newTemp);
+    setBSTsize(h->bstree, sizeBST(h->bstree)-1);
     h->size --;
-    return getBSTNODEvalue(returnable);
+
+    return returnable;
+
+}
+
+// extern void *
+// extractHEAP(HEAP *h) {
+//     BST *t = h->bstree;
+//     BSTNODE *node = getBSTroot(t);
+//     BSTNODE *leaf = pop(h->stack);
+//     displaySTACK(h->stack, stdout);
+//     printf("BEFORE THE INITIAL SWITCH\n");
+//     printf("NODE: ");
+//     h->display(getBSTNODEvalue(node), stdout);
+//     printf("\n");
+//     printf("LEAF: ");
+//     h->display(getBSTNODEvalue(leaf), stdout);
+//     printf("\n");
+//     void *data = getBSTNODEvalue(node);
+//     setBSTNODEvalue(node, getBSTNODEvalue(leaf));
+//     setBSTNODEvalue(leaf, data);
+//     printf("AFTER THE SWITCH\n");
+//     printf("NODE: ");
+//     h->display(getBSTNODEvalue(node), stdout);
+//     printf("\n");
+//     printf("LEAF: ");
+//     h->display(getBSTNODEvalue(leaf), stdout);
+//     printf("\n");
+//     printf("\n");
+//     pruneLeafBST(t, leaf);
+//     rebuild(h, node);
+//     h->size --;
+//     setBSTsize(t, sizeBST(t)-1);
+//     return getBSTNODEvalue(leaf);
+// }
+
+void
+rebuild(HEAP *h, BSTNODE *node) {
+    if (node == NULL) {return;}
+
+    BSTNODE *extreme = node;
+    BSTNODE *l = getBSTNODEleft(node);
+    BSTNODE *r = getBSTNODEright(node);
+    if (l!=NULL && h->compare(getBSTNODEvalue(l), getBSTNODEvalue(node)) < 0) {
+        extreme = l;
+    }
+    if (r!=NULL && h->compare(getBSTNODEvalue(r), getBSTNODEvalue(node)) < 0) {
+        extreme = r;
+    }
+
+    if (h->compare(getBSTNODEvalue(extreme), getBSTNODEvalue(node)) != 0) {
+        void *data = getBSTNODEvalue(extreme);
+        // printf("DATA: ");
+        // h->display(data, stdout);
+        // printf("\n");
+        setBSTNODEvalue(extreme, getBSTNODEvalue(node));
+        setBSTNODEvalue(node, data);
+        rebuild(h, extreme);
+    }
+
+    return;
 }
 
 extern int
@@ -140,11 +228,58 @@ displayHEAPdebug(HEAP *h, FILE *fp) {
 
 extern void
 freeHEAP(HEAP *h) {
+    //printf("qs: %d\nss: %d\n", sizeQUEUE(h->queue), sizeSTACK(h->stack));
+    //freeQUEUE(h->queue);
+    //freeSTACK(h->stack);
     freeBST(h->bstree);
     free(h);
     return;
 }
 
+void
+heapify(HEAP *h, BSTNODE *node) {
+    if (node == NULL) {return;}
+
+    heapify(h, getBSTNODEleft(node));
+    heapify(h, getBSTNODEright(node));
+
+    BSTNODE *extreme = node;
+    // printf("EXTREME: ");
+    // h->display(getBSTNODEvalue(extreme), stdout);
+    // printf("\n");
+    BSTNODE *l = getBSTNODEleft(node);
+    // printf("LEFT: ");
+    // h->display(getBSTNODEvalue(l), stdout);
+    // printf("\n");
+    BSTNODE *r = getBSTNODEright(node);
+    // printf("RIGHT: ");
+    // h->display(getBSTNODEvalue(r), stdout);
+    // printf("\n");
+    if (l!=NULL && h->compare(getBSTNODEvalue(l), getBSTNODEvalue(node)) < 0) {
+        extreme = l;
+        //heapify(h, l);
+    }
+    if (r!=NULL && h->compare(getBSTNODEvalue(r), getBSTNODEvalue(node)) < 0) {
+        extreme = r;
+        //heapify(h, r);
+    }
+
+    if (h->compare(getBSTNODEvalue(extreme), getBSTNODEvalue(node)) != 0) {
+        void *data = getBSTNODEvalue(extreme);
+        // printf("DATA: ");
+        // h->display(data, stdout);
+        // printf("\n");
+        setBSTNODEvalue(extreme, getBSTNODEvalue(node));
+        setBSTNODEvalue(node, data);
+    }
+
+    // heapify(h, getBSTNODEleft(node));
+    // heapify(h, getBSTNODEright(node));
+    return;
+}
+
+
+/*
 void
 heapify(HEAP *h, BSTNODE *node) {
     if (getBSTNODEparent(node) == NULL) {
@@ -204,8 +339,10 @@ heapify(HEAP *h, BSTNODE *node) {
         return;
     }
 }
+*/
 
 
+/*
 void
 heapifydown(HEAP *h, BSTNODE *node) {
     if (getBSTNODEleft(node) == NULL && getBSTNODEright(node) == NULL) {
@@ -225,7 +362,7 @@ heapifydown(HEAP *h, BSTNODE *node) {
             extreme = right;
         }
     }
-}
+}*/
 
 /*
 BSTNODE *
