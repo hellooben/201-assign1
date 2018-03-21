@@ -229,6 +229,7 @@ extractHEAP(HEAP *h) {
     setBSTNODEvalue(temp, getBSTNODEvalue(leaf));
     setBSTNODEvalue(leaf, returnable);
     pruneLeafBST(h->bstree, leaf);
+    h->free(leaf);
     setBSTsize(h->bstree, sizeBST(h->bstree)-1);
     h->size --;
     heapifyDOWN(h, temp);
@@ -314,9 +315,15 @@ displayHEAPdebug(HEAP *h, FILE *fp) {
 
 extern void
 freeHEAP(HEAP *h) {
-    //printf("qs: %d\nss: %d\n", sizeQUEUE(h->queue), sizeSTACK(h->stack));
-    //freeQUEUE(h->queue);
-    //freeSTACK(h->stack);
+    // printf("qs: %d\nss: %d\ninsq: %d\n", sizeQUEUE(h->queue), sizeSTACK(h->stack), sizeQUEUE(h->insertQ));
+    while (sizeSTACK(h->stack) > 0) {pop(h->stack);}
+    while (sizeQUEUE(h->insertQ) > 0) {dequeue(h->insertQ);}
+    while (sizeQUEUE(h->queue) > 0) {dequeue(h->queue);}
+    // printf("qs: %d\nss: %d\ninsq: %d\n", sizeQUEUE(h->queue), sizeSTACK(h->stack), sizeQUEUE(h->insertQ));
+
+    freeQUEUE(h->queue);
+    freeSTACK(h->stack);
+    freeQUEUE(h->insertQ);
     freeBST(h->bstree);
     free(h);
     return;
