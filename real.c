@@ -44,6 +44,11 @@ compareREAL(void *v,void *w)
     return getREAL(v) - getREAL(w);
     }
 
+int
+rcompareREAL(void *v,void *w) {
+    return getREAL(w) - getREAL(v);
+}
+
 void
 freeREAL(void *v)
     {

@@ -1,135 +1,121 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "heap.h"
 #include "bst.h"
+#include "sll.h"
+#include "dll.h"
+#include "stack.h"
+#include "queue.h"
 #include "integer.h"
 #include "real.h"
 #include "string.h"
-#include "stack.h"
-#include "queue.h"
-#include "heap.h"
+//#include "options.c"
 #include "scanner.h"
+#include <stdlib.h>
+#include <stdio.h>
+
+static void (*display)(void *,FILE *);
+
+int main(int argc, char **argv) {
+    HEAP *h;
+    FILE *fp = fopen(argv[argc-1], "r");
+    int data = 0;
+    int type = 0;
+
+    for (int i=0; i<argc; i++) {
+        switch (argv[i][1]) {
+            case 'v':
+                printf("Author: Ben Bailey\nWhy heapsort runs in nlogn time");
+                exit(-1);
+                break;
+
+            case 'i': //integer
+                data = 0;
+                break;
+            case 'r': //real
+                data = 1;
+                break;
+            case 's': //string
+                data = 2;
+                break;
+            case 'I': //increasing (min heap)
+                type = 0;
+                break;
+            case 'D':  //deacreasing (max heap)
+                type = 1;
+                break;
+        }
+    }
+
+    if (data == 1) {
+        display = displayREAL;
+        if (type == 1) {
+            h = newHEAP(displayREAL, rcompareREAL, freeREAL);
+        }
+        else {
+            h = newHEAP(displayREAL, compareREAL, freeREAL);
+        }
+
+        double dub = readReal(fp);
+        while (!feof(fp)) {
+            insertHEAP(h, newREAL(dub));
+            dub = readReal(fp);
+        }
+    }
+
+    else if (data == 2) {
+        display = displayREAL;
+        if (type == 1) {
+            h = newHEAP(displaySTRING, rcompareSTRING, freeSTRING);
+        }
+        else {
+            h = newHEAP(displaySTRING, compareSTRING, freeSTRING);
+        }
+
+        int str = stringPending(fp);
+        char *temp;
+        if (str == 0) {
+            temp = readToken(fp);
+        }
+        else {
+            temp = readString(fp);
+        }
+        while (!feof(fp)) {
+            STRING *new = newSTRING(temp);
+            insertHEAP(h, new);
+            str = stringPending(fp);
+            if (str == 0) {
+                temp = readToken(fp);
+            }
+            else {
+                temp = readString(fp);
+            }
+        }
+    }
+
+    else {
+        display = displayINTEGER;
+        if (type == 1) {
+            h = newHEAP(displayINTEGER, rcompareINTEGER, freeINTEGER);
+        }
+        else {
+            h = newHEAP(displayINTEGER, compareINTEGER, freeINTEGER);
+        }
+
+        int num = readInt(fp);
+        while (!feof(fp)) {
+            insertHEAP(h, newINTEGER(num));
+            num = readInt(fp);
+        }
+    }
 
 
-extern void readIntegers(HEAP *h, FILE *fp);
-extern void readReals(HEAP *h, FILE *fp);
-extern void readStringsAndTokens(HEAP *h, FILE *fp);
+    buildHEAP(h);
+    while (sizeHEAP(h) > 0) {
+        void *thing = extractHEAP(h);
+        display(thing, stdout);
+        if (sizeHEAP(h) != 0) {printf(" ");}
+    }
+    printf("\n");
+    fclose(fp);
 
-
-int
-main(int argc, char **argv) {
-  // printf("beginning of main\n");
-  // static void (*reader)(FILE *,HEAP *);
-
-  static int (*compare)(void *,void *);
-  static void (*display)(void *,FILE *);
-  static void (*release)(void *);
-
-  HEAP *h;
-  FILE *fp = fopen(argv[argc-1], "r");
-  int sort = 0;
-  int var  = 0;
-
-  for (int i=0; i<argc; i++) {
-    switch (argv[i][1]) {
-      case 'v':
-        printf("Ben Bailey\n");
-        exit(-1);
-        break;
-
-      case 'i':
-        var = 0;
-        break;
-
-      case 'r':
-        var = 1;
-        break;
-
-      case 's':
-        var = 2;
-        break;
-
-      case 'I':
-        sort = 0;
-        break;
-
-      case 'D':
-        sort = 1;
-        break;
-    }
-  }
-
-  if (var == 1) {
-    display = displayREAL;
-    release = freeREAL;
-    if (sort == 1) compare = compareREALdecr;
-    else compare = compareREAL;
-    h = newHEAP(display, compare, release);
-    readReals(h, fp);
-  }
-  else if (var == 2) {
-    display = displaySTRING;
-    release = freeSTRING;
-    if (sort == 1) compare = compareSTRINGdecr;
-    else compare = compareSTRING;
-    h = newHEAP(display, compare, release);
-    readStringsAndTokens(h, fp);
-  }
-  else {
-    display = displayINTEGER;
-    release = freeINTEGER;
-    if (sort == 1) compare = compareINTEGERdecr;
-    else compare = compareINTEGER;
-    h = newHEAP(display, compare, release);
-    readIntegers(h, fp);
-  }
-
-  buildHEAP(h);
-  while (sizeHEAP(h) > 0) {
-    void *temp = extractHEAP(h);
-    if (sizeHEAP(h) == 0) {
-      display(temp, stdout);
-    }
-    else {
-      display(temp, stdout);
-      printf(" ");
-    }
-  }
-  printf("\n");
-
-  fclose(fp);
-
-  return 0;
-}
-
-extern void
-readIntegers(HEAP *h, FILE *fp) {
-  int temp = readInt(fp);
-  while (!feof(fp)) {
-    insertHEAP(h, newINTEGER(temp));
-    temp = readInt(fp);
-  }
-}
-
-extern void
-readReals(HEAP *h, FILE *fp) {
-  double temp = readReal(fp);
-  while (!feof(fp)) {
-    insertHEAP(h, newREAL(temp));
-    temp = readReal(fp);
-  }
-}
-
-extern void
-readStringsAndTokens(HEAP *h, FILE *fp) {
-  int sot = stringPending(fp);
-  char *temp;
-  if (sot == 0) temp = readToken(fp);
-  else temp = readString(fp);
-  while (!feof(fp)) {
-    STRING *temp2 = newSTRING(temp);
-    insertHEAP(h, temp2);
-    sot = stringPending(fp);
-    if (sot == 0) temp = readToken(fp);
-    else temp = readString(fp);
-  }
+    return 0;
 }

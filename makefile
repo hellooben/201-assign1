@@ -1,4 +1,4 @@
-OBJS = integer.o real.o string.o sll.o dll.o stack.o queue.o heap.o a.out bst.o sll-*-*.o dll-*-*.o stack-*-*.o queue-*-*.o heap-*-*.o
+OBJS = integer.o real.o string.o sll.o dll.o stack.o queue.o heap.o a.out bst.o sll-*-*.o dll-*-*.o stack-*-*.o queue-*-*.o heap-*-*.o scanner.o heapsort.o
 LOPTS = -Wall -Wextra -std=c99
 EXTRAS = integer.c real.c string.c sll.c dll.c stack.c queue.c
 OEXTRAS = integer.o real.o string.o sll.o dll.o stack.o queue.o
@@ -29,6 +29,10 @@ test-heap :
 	gcc $(LOPTS) -c heap.c bst.c $(EXTRAS) tests/heap-2-12.c
 	gcc $(LOPTS) heap-2-12.o $(OEXTRAS) bst.o heap.o -o test-heap
 
+test-heapsort :
+	gcc $(LOPTS) -c heapsort.c heap.c bst.c scanner.c $(EXTRAS)
+	gcc $(LOPTS) $(OEXTRAS) scanner.o bst.o heap.o heapsort.o -o heapsort
+
 valgrind :
 	echo testing singly-linked list
 	valgrind ./test-sll
@@ -50,12 +54,13 @@ valgrind :
 	echo
 
 test :
-	./test-sll
-	./test-dll
-	./test-stack
-	./test-queue
-	./test-bst
-	./test-heap
+	# ./test-sll
+	# ./test-dll
+	# ./test-stack
+	# ./test-queue
+	# ./test-bst
+	# ./test-heap
+	./heapsort
 
 clean :
 	rm -f $(OBJS) test-*.o bst-*-*.o test-bst test-sll test-dll test-stack test-queue test-heap

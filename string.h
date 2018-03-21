@@ -9,6 +9,7 @@ extern STRING *newSTRING(char *);
 extern char * getSTRING(STRING *);
 extern char * setSTRING(STRING *,char *);
 extern int compareSTRING(void *,void *);
+extern int rcompareSTRING(void *,void *);
 extern void displaySTRING(void *,FILE *);
 extern void freeSTRING(void *);
 
