@@ -26,8 +26,8 @@ test-bst :
 	gcc $(LOPTS) bst-2-10.o $(OEXTRAS) bst.o -o test-bst
 
 test-heap :
-	gcc $(LOPTS) -c heap.c bst.c $(EXTRAS) tests/heap-2-5.c
-	gcc $(LOPTS) heap-2-5.o $(OEXTRAS) bst.o heap.o -o test-heap
+	gcc $(LOPTS) -c heap.c bst.c $(EXTRAS) tests/heap-2-12.c
+	gcc $(LOPTS) heap-2-12.o $(OEXTRAS) bst.o heap.o -o test-heap
 
 valgrind :
 	echo testing singly-linked list
