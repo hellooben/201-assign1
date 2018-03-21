@@ -15,37 +15,47 @@
 static void (*display)(void *,FILE *);
 
 int main(int argc, char **argv) {
+    // printf("%d\n", argc);
+    // for (int i=0; i<argc; i++) {
+    //     printf("%s\n", argv[i]);
+    // }
     HEAP *h;
     FILE *fp = fopen(argv[argc-1], "r");
     int data = 0;
     int type = 0;
+    // printf("just outside of the loop\n");
+    if (argc != 2) {
+        for (int i=0; i<argc; i++) {
+            // printf("right before the switch\n");
+            switch (argv[i][1]) {
+                // printf("in switch\n");
+                case 'v':
+                    printf("Author: Ben Bailey\nWhy heapsort runs in nlogn time");
+                    exit(-1);
+                    break;
 
-    for (int i=0; i<argc; i++) {
-        switch (argv[i][1]) {
-            case 'v':
-                printf("Author: Ben Bailey\nWhy heapsort runs in nlogn time");
-                exit(-1);
-                break;
-
-            case 'i': //integer
-                data = 0;
-                break;
-            case 'r': //real
-                data = 1;
-                break;
-            case 's': //string
-                data = 2;
-                break;
-            case 'I': //increasing (min heap)
-                type = 0;
-                break;
-            case 'D':  //deacreasing (max heap)
-                type = 1;
-                break;
+                case 'i': //integer
+                    data = 0;
+                    break;
+                case 'r': //real
+                    data = 1;
+                    break;
+                case 's': //string
+                    data = 2;
+                    break;
+                case 'I': //increasing (min heap)
+                    type = 0;
+                    break;
+                case 'D':  //deacreasing (max heap)
+                    type = 1;
+                    break;
+            }
         }
     }
+    // printf("sup\n");
 
     if (data == 1) {
+        // printf("after first if\n");
         display = displayREAL;
         if (type == 1) {
             h = newHEAP(displayREAL, rcompareREAL, freeREAL);
@@ -61,7 +71,9 @@ int main(int argc, char **argv) {
         }
     }
 
+
     else if (data == 2) {
+        // printf("after second if\n");
         display = displayREAL;
         if (type == 1) {
             h = newHEAP(displaySTRING, rcompareSTRING, freeSTRING);
@@ -91,7 +103,9 @@ int main(int argc, char **argv) {
         }
     }
 
+
     else {
+        // printf("after third if\n");
         display = displayINTEGER;
         if (type == 1) {
             h = newHEAP(displayINTEGER, rcompareINTEGER, freeINTEGER);
@@ -108,6 +122,7 @@ int main(int argc, char **argv) {
     }
 
 
+    // printf("about to build\n");
     buildHEAP(h);
     while (sizeHEAP(h) > 0) {
         void *thing = extractHEAP(h);

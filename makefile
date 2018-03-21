@@ -60,7 +60,7 @@ test :
 	# ./test-queue
 	# ./test-bst
 	# ./test-heap
-	./heapsort
+	./heapsort tests/hs-0-0.data
 
 clean :
 	rm -f $(OBJS) test-*.o bst-*-*.o test-bst test-sll test-dll test-stack test-queue test-heap
