@@ -41,12 +41,14 @@ displayINTEGER(void *v,FILE *fp)
 int
 compareINTEGER(void *v,void *w)
     {
+        // printf("sup!!!!!!!!!\n");
     return getINTEGER(v) - getINTEGER(w);
     }
 
 int
 rcompareINTEGER(void *v,void *w)
     {
+        // printf("sup!!!!!!!!!\n");
     return getINTEGER(w) - getINTEGER(v);
     }
 

@@ -3,7 +3,7 @@ LOPTS = -Wall -Wextra -std=c99
 EXTRAS = integer.c real.c string.c sll.c dll.c stack.c queue.c
 OEXTRAS = integer.o real.o string.o sll.o dll.o stack.o queue.o
 
-all : test-sll test-dll test-stack test-queue test-bst
+all : test-sll test-dll test-stack test-queue test-bst test-heap test-heapsort
 
 test-sll :
 	gcc $(LOPTS) -c sll.c integer.c tests/sll-0-0.c
@@ -52,15 +52,17 @@ valgrind :
 	echo testing heap
 	valgrind ./test-heap
 	echo
+	echo testing heapsort
+	valgrind ./test-heapsort tests/hs-0-0.data
 
 test :
-	# ./test-sll
-	# ./test-dll
-	# ./test-stack
-	# ./test-queue
-	# ./test-bst
-	# ./test-heap
+	./test-sll
+	./test-dll
+	./test-stack
+	./test-queue
+	./test-bst
+	./test-heap
 	./heapsort tests/hs-0-0.data
 
 clean :
-	rm -f $(OBJS) test-*.o bst-*-*.o test-bst test-sll test-dll test-stack test-queue test-heap
+	rm -f $(OBJS) test-*.o bst-*-*.o test-bst test-sll test-dll test-stack test-queue test-heap heapsort

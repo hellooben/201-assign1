@@ -47,7 +47,7 @@ compareSTRING(void *v,void *w)
 
 int
 rcompareSTRING(void *v,void *w) {
-    return strcmp(getSTRING(w),getSTRING(v));
+    return compareSTRING(w,v);
 }
 
 void

@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
     int type = 0;
     // printf("just outside of the loop\n");
     if (argc != 2) {
-        for (int i=0; i<argc; i++) {
+        for (int i=0; i<argc-1; i++) {
             // printf("right before the switch\n");
             switch (argv[i][1]) {
                 // printf("in switch\n");
@@ -35,12 +35,15 @@ int main(int argc, char **argv) {
                     break;
 
                 case 'i': //integer
+                    // printf("found an integer arg\n");
                     data = 0;
                     break;
                 case 'r': //real
+                    // printf("found an real arg\n");
                     data = 1;
                     break;
                 case 's': //string
+                    // printf("found an string arg: \n");
                     data = 2;
                     break;
                 case 'I': //increasing (min heap)
@@ -53,11 +56,13 @@ int main(int argc, char **argv) {
         }
     }
     // printf("sup\n");
+    printf("DATA: %d\nTYPE: %d\n", data, type);
 
     if (data == 1) {
         // printf("after first if\n");
         display = displayREAL;
         if (type == 1) {
+            // printf("MAKING A REAL MAX HEAP\n");
             h = newHEAP(displayREAL, rcompareREAL, freeREAL);
         }
         else {
@@ -74,8 +79,9 @@ int main(int argc, char **argv) {
 
     else if (data == 2) {
         // printf("after second if\n");
-        display = displayREAL;
+        display = displaySTRING;
         if (type == 1) {
+            // printf("MAKING A NEW MAX HEAP\n");
             h = newHEAP(displaySTRING, rcompareSTRING, freeSTRING);
         }
         else {
@@ -121,15 +127,19 @@ int main(int argc, char **argv) {
         }
     }
 
-
+    // displayHEAPdebug(h, stdout);
+    // printf("\n\n");
     // printf("about to build\n");
     buildHEAP(h);
+    // displayHEAPdebug(h, stdout);
+    // printf("\n\n\n");
     while (sizeHEAP(h) > 0) {
         void *thing = extractHEAP(h);
         display(thing, stdout);
         if (sizeHEAP(h) != 0) {printf(" ");}
     }
     printf("\n");
+    freeHEAP(h);
     fclose(fp);
 
     return 0;
