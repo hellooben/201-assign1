@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
         }
     }
     // printf("sup\n");
-    printf("DATA: %d\nTYPE: %d\n", data, type);
+    // printf("DATA: %d\nTYPE: %d\n", data, type);
 
     if (data == 1) {
         // printf("after first if\n");
@@ -134,9 +134,20 @@ int main(int argc, char **argv) {
     // displayHEAPdebug(h, stdout);
     // printf("\n\n\n");
     while (sizeHEAP(h) > 0) {
+        // if (sizeHEAP(h) < 5) {
+        //     printf("\n");
+        //     displayHEAPdebug(h, stdout);
+        //     printf("\n\n");
+        // }
         void *thing = extractHEAP(h);
+        // printf("EXTRACTED\n");
         display(thing, stdout);
         if (sizeHEAP(h) != 0) {printf(" ");}
+        // if (sizeHEAP(h) < 5) {
+        //     printf("\n");
+        //     displayHEAPdebug(h, stdout);
+        //     printf("\n\n");
+        // }
     }
     printf("\n");
     freeHEAP(h);

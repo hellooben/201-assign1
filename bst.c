@@ -313,18 +313,33 @@ pruneLeafBST(BST *t,BSTNODE *leaf) {
         //printf("got parent: ");
         //t->display(par->data, stdout);
         //printf("\n");
-        if (par->left != NULL) {
+        // if (par->left != NULL) {
+        //     //printf("left isnt null\n");
+        //     if (t->compare(getBSTNODEvalue(par->left), getBSTNODEvalue(leaf)) == 0) {
+        //         printf("its a left leaf\n");
+        //         par->left = NULL;
+        //         leaf->parent = NULL;
+        //         return;
+        //     }
+        // }
+        // if (par->right != NULL) {
+        //     printf("it's a right leaf\n");
+        //     par->right = NULL;
+        //     leaf->parent = NULL;
+        //     return;
+        // }
+        if (par->right != NULL) {
             //printf("left isnt null\n");
-            if (t->compare(getBSTNODEvalue(par->left), getBSTNODEvalue(leaf)) == 0) {
-                //printf("its a left leaf\n");
-                par->left = NULL;
+            if (t->compare(getBSTNODEvalue(par->right), getBSTNODEvalue(leaf)) == 0) {
+                // printf("its a right leaf\n");
+                par->right = NULL;
                 leaf->parent = NULL;
                 return;
             }
         }
-        if (par->right != NULL) {
-            //printf("it's a right leaf\n");
-            par->right = NULL;
+        if (par->left != NULL) {
+            // printf("it's a left leaf\n");
+            par->left = NULL;
             leaf->parent = NULL;
             return;
         }

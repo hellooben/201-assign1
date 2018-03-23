@@ -10,7 +10,6 @@
 
 void heapifyDOWN(HEAP *h, BSTNODE *node);
 void heapifyUP(HEAP *h, BSTNODE *node, BSTNODE *parent);
-BSTNODE * findExtreme(HEAP *h, BSTNODE *one, BSTNODE *two, BSTNODE *three);
 
 struct heap
 {
@@ -150,7 +149,13 @@ heapifyDOWN(HEAP *h, BSTNODE *node) {
     BSTNODE *l = getBSTNODEleft(node);
     BSTNODE *r = getBSTNODEright(node);
 
-    if (l == NULL) {return;}
+    if (l == NULL) {
+        // printf("left is null\n");
+        // if (r != NULL) {
+        //     heapifyUP(h, r, node);
+        // }
+        return;
+    }
     else {
         if (l != NULL && r != NULL) {
             if (h->compare(getBSTNODEvalue(l),getBSTNODEvalue(r)) < 0) {
@@ -189,78 +194,6 @@ heapifyDOWN(HEAP *h, BSTNODE *node) {
         }
     }
     return;
-}
-
-// void
-// heapifyDOWN(HEAP *h, BSTNODE *node) {
-    // if (node == NULL) {return;}
-    //
-    // BSTNODE *extreme = node;
-    // BSTNODE *l = getBSTNODEleft(node);
-    // BSTNODE *r = getBSTNODEright(node);
-    //
-    // if (l == NULL) {return;}
-    //
-    // else if (l == NULL && r == NULL) {
-    //     // printf("no children, heapifying up\n");
-    //     heapifyUP(h, node, getBSTNODEparent(node));
-    //     return;
-    // }
-    // // if (l != NULL && r != NULL) {
-    // //     if (h->compare(getBSTNODEvalue(l),getBSTNODEvalue(node))>0 && h->compare(getBSTNODEvalue(r),getBSTNODEvalue(node))>0) {
-    // //         heapifyUP(h, node, getBSTNODEparent(node));
-    // //         return;
-    // //     }
-    // // }
-    // if (r == NULL) {extreme = l;}
-    // // else {printf("finding extreme\n");extreme = findExtreme(h, node, l, r);}
-    // //
-    // // if (h->compare(getBSTNODEvalue(extreme), getBSTNODEvalue(node)) != 0) {
-    // //     void *data = getBSTNODEvalue(extreme);
-    // //     setBSTNODEvalue(extreme, getBSTNODEvalue(node));
-    // //     setBSTNODEvalue(node, data);
-    // //     enqueue(h->queue, node);
-    // //     heapifyDOWN(h, extreme);
-    // // }
-    // // else {
-    // //     heapifyUP(h, node, getBSTNODEparent(node));
-    // // }
-    // if (r == NULL && l != NULL) {extreme = l;}
-
-//     else if (h->compare(getBSTNODEvalue(l),getBSTNODEvalue(r)) > 0) {
-//         extreme = r;
-//     }
-//     else {
-//         extreme = l;
-//     }
-//
-//     if (h->compare(getBSTNODEvalue(extreme), getBSTNODEvalue(node)) > 0) {
-//         extreme = node;
-//     }
-//
-//     if (h->compare(getBSTNODEvalue(extreme), getBSTNODEvalue(node)) != 0) {
-//         void *data = getBSTNODEvalue(extreme);
-//         setBSTNODEvalue(extreme, getBSTNODEvalue(node));
-//         setBSTNODEvalue(node, data);
-//         enqueue(h->queue, node);
-//         heapifyDOWN(h, extreme);
-//     }
-//
-//     return;
-// }
-
-BSTNODE *
-findExtreme(HEAP *h, BSTNODE *one, BSTNODE *two, BSTNODE *three) {
-    //BSTNODE *extreme = one;
-    if (h->compare(getBSTNODEvalue(one), getBSTNODEvalue(two)) > 0 && h->compare(getBSTNODEvalue(three), getBSTNODEvalue(two)) > 0) {
-        return two;
-    }
-    else if (h->compare(getBSTNODEvalue(one), getBSTNODEvalue(three)) > 0 && h->compare(getBSTNODEvalue(two), getBSTNODEvalue(three)) > 0) {
-        return three;
-    }
-    else {
-        return one;
-    }
 }
 
 void
@@ -307,8 +240,16 @@ extractHEAP(HEAP *h) {
     void *returnable = getBSTNODEvalue(temp);
 
     BSTNODE *leaf = pop(h->stack);
+    if (sizeQUEUE(h->insertQ) > 0) {dequeue(h->insertQ);}
+    if (sizeQUEUE(h->queue) > 0) {dequeue(h->queue);}
+    // printf("LEAF POPPED: ");
+    // h->display(getBSTNODEvalue(leaf), stdout);
+    // printf("\n");
     setBSTNODEvalue(temp, getBSTNODEvalue(leaf));
     setBSTNODEvalue(leaf, returnable);
+    // printf("NEW LEAF: ");
+    // h->display(getBSTNODEvalue(leaf), stdout);
+    // printf("\n");
     pruneLeafBST(h->bstree, leaf);
     h->free(leaf);
     setBSTsize(h->bstree, sizeBST(h->bstree)-1);
@@ -316,30 +257,6 @@ extractHEAP(HEAP *h) {
     heapifyDOWN(h, temp);
 
     return returnable;
-}
-
-void
-rebuild(HEAP *h, BSTNODE *node) {
-    if (node == NULL) {return;}
-
-    BSTNODE *extreme = node;
-    BSTNODE *l = getBSTNODEleft(node);
-    BSTNODE *r = getBSTNODEright(node);
-    if (l!=NULL && h->compare(getBSTNODEvalue(l), getBSTNODEvalue(node)) < 0) {
-        extreme = l;
-    }
-    if (r!=NULL && h->compare(getBSTNODEvalue(r), getBSTNODEvalue(node)) < 0) {
-        extreme = r;
-    }
-
-    if (h->compare(getBSTNODEvalue(extreme), getBSTNODEvalue(node)) != 0) {
-        void *data = getBSTNODEvalue(extreme);
-        setBSTNODEvalue(extreme, getBSTNODEvalue(node));
-        setBSTNODEvalue(node, data);
-        rebuild(h, extreme);
-    }
-
-    return;
 }
 
 extern int
@@ -362,13 +279,14 @@ displayHEAPdebug(HEAP *h, FILE *fp) {
 
 extern void
 freeHEAP(HEAP *h) {
-    while (sizeSTACK(h->stack) > 0) {pop(h->stack);}
-    while (sizeQUEUE(h->insertQ) > 0) {dequeue(h->insertQ);}
-    while (sizeQUEUE(h->queue) > 0) {dequeue(h->queue);}
-
-    freeQUEUE(h->queue);
-    freeSTACK(h->stack);
-    freeQUEUE(h->insertQ);
+    printf("stack: %d\ninsQ: %d\nQQ: %d\n", sizeSTACK(h->stack),sizeQUEUE(h->insertQ),sizeQUEUE(h->queue));
+    // while (sizeSTACK(h->stack) > 0) {pop(h->stack);}
+    // while (sizeQUEUE(h->insertQ) > 0) {dequeue(h->insertQ);}
+    // while (sizeQUEUE(h->queue) > 0) {dequeue(h->queue);}
+    //
+    // freeQUEUE(h->queue);
+    // freeSTACK(h->stack);
+    // freeQUEUE(h->insertQ);
     freeBST(h->bstree);
     free(h);
     return;
