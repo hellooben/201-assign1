@@ -18,6 +18,7 @@ struct heap
     QUEUE *queue;
     QUEUE *insertQ;
     STACK *stack;
+    // STACK *insertSTACK;
     int size;
     void (*display)(void *,FILE *);          //display
     int (*compare)(void *,void *);
@@ -36,6 +37,7 @@ newHEAP(
     tree->queue = newQUEUE(d, f);
     tree->insertQ = newQUEUE(d, f);
     tree->stack = newSTACK(d, f);
+    // tree->insertSTACK = newSTACK(d, f);
     tree->size = 0;
     tree->root = NULL;
     tree->display = d;
@@ -56,6 +58,7 @@ insertHEAP(HEAP *h,void *value) {
         enqueue(h->insertQ, new);
         enqueue(h->queue, new);
         push(h->stack, new);
+        // push(h->insertSTACK, new);
 
         h->size ++;
     }
@@ -69,6 +72,7 @@ insertHEAP(HEAP *h,void *value) {
             enqueue(h->insertQ, new);
             enqueue(h->queue, new);
             push(h->stack, new);
+            // push(h->insertSTACK, new);
 
             h->size ++;
         }
@@ -80,6 +84,7 @@ insertHEAP(HEAP *h,void *value) {
             enqueue(h->insertQ, new);
             enqueue(h->queue, new);
             push(h->stack, new);
+            // push(h->insertSTACK, new);
 
             h->size ++;
         }
@@ -100,7 +105,9 @@ insertHEAP(HEAP *h,void *value) {
 extern void
 buildHEAP(HEAP *h) {
     BSTNODE *temp = dequeue(h->queue);
+    // BSTNODE *temp = pop(h->insertSTACK);
     while (sizeQUEUE(h->queue) > 0) {
+    // while (sizeSTACK(h->insertSTACK) > 0) {
         // printf("DEBUGGing: ");
         // h->display(getBSTNODEvalue(temp), stdout);
         // printf("\n");
@@ -125,6 +132,7 @@ buildHEAP(HEAP *h) {
             heapifyDOWN(h, temp);
         }
         temp = dequeue(h->queue);
+        // temp = pop(h->insertSTACK);
         // displayHEAPdebug(h, stdout);
         // printf("\n\n");
     }
@@ -279,14 +287,16 @@ displayHEAPdebug(HEAP *h, FILE *fp) {
 
 extern void
 freeHEAP(HEAP *h) {
-    printf("stack: %d\ninsQ: %d\nQQ: %d\n", sizeSTACK(h->stack),sizeQUEUE(h->insertQ),sizeQUEUE(h->queue));
-    // while (sizeSTACK(h->stack) > 0) {pop(h->stack);}
-    // while (sizeQUEUE(h->insertQ) > 0) {dequeue(h->insertQ);}
-    // while (sizeQUEUE(h->queue) > 0) {dequeue(h->queue);}
-    //
-    // freeQUEUE(h->queue);
-    // freeSTACK(h->stack);
-    // freeQUEUE(h->insertQ);
+    // printf("stack: %d\ninsQ: %d\nQQ: %d\n", sizeSTACK(h->stack),sizeQUEUE(h->insertQ),sizeQUEUE(h->queue));
+    while (sizeSTACK(h->stack) > 0) {pop(h->stack);}
+    // while (sizeSTACK(h->insertSTACK) > 0) {pop(h->insertSTACK);}
+    while (sizeQUEUE(h->insertQ) > 0) {dequeue(h->insertQ);}
+    while (sizeQUEUE(h->queue) > 0) {dequeue(h->queue);}
+
+    freeQUEUE(h->queue);
+    freeSTACK(h->stack);
+    // freeSTACK(h->insertSTACK);
+    freeQUEUE(h->insertQ);
     freeBST(h->bstree);
     free(h);
     return;

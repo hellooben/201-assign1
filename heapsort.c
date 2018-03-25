@@ -11,6 +11,7 @@
 #include "scanner.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 static void (*display)(void *,FILE *);
 
@@ -24,6 +25,10 @@ int main(int argc, char **argv) {
     int data = 0;
     int type = 0;
     // printf("just outside of the loop\n");
+    if (argc == 2 && strcmp(argv[1], "-v") == 0) {
+        printf("Author: Ben Bailey\nWhy heapsort runs in nlogn time\n");
+        return 0;
+    }
     if (argc != 2) {
         for (int i=0; i<argc-1; i++) {
             // printf("right before the switch\n");
@@ -150,7 +155,7 @@ int main(int argc, char **argv) {
         // }
     }
     printf("\n");
-    freeHEAP(h);
+    // freeHEAP(h);
     fclose(fp);
 
     return 0;
