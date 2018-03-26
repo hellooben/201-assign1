@@ -3,7 +3,7 @@ LOPTS = -Wall -Wextra -std=c99
 EXTRAS = integer.c real.c string.c sll.c dll.c stack.c queue.c
 OEXTRAS = integer.o real.o string.o sll.o dll.o stack.o queue.o
 
-all : test-sll test-dll test-stack test-queue test-bst test-heap test-heapsort
+all : test-sll test-dll test-stack test-queue test-bst test-heap heapsort
 
 test-sll :
 	gcc $(LOPTS) -c sll.c integer.c real.c sll-0-0.c
@@ -29,9 +29,9 @@ test-heap :
 	gcc $(LOPTS) -c heap.c bst.c $(EXTRAS) heap-0-0.c
 	gcc $(LOPTS) heap-0-0.o $(OEXTRAS) bst.o heap.o -o test-heap
 
-test-heapsort :
-	gcc $(LOPTS) -c heapsort.c heap.c bst.c scanner.c $(EXTRAS)
-	gcc $(LOPTS) $(OEXTRAS) scanner.o bst.o heap.o heapsort.o -o heapsort
+heapsort:
+	gcc $(LOPTS) -c heapsort.c bst.c $(EXTRAS) heap.c scanner.c
+	gcc $(LOPTS) heapsort.c $(OEXTRAS) bst.o heap.o scanner.o -o heapsort
 
 valgrind :
 	echo testing singly-linked list
@@ -63,7 +63,7 @@ test :
 	./test-queue
 	./test-bst
 	./test-heap
-	./heapsort tests/hs-0-0.data
+	./heapsort -v
 
 clean :
 	rm -f $(OBJS) test-*.o bst-*-*.o test-bst test-sll test-dll test-stack test-queue test-heap heapsort

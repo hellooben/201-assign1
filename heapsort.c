@@ -26,19 +26,14 @@ int main(int argc, char **argv) {
     int type = 0;
     // printf("just outside of the loop\n");
     if (argc == 2 && strcmp(argv[1], "-v") == 0) {
-        printf("Author: Ben Bailey\nWhy heapsort runs in nlogn time\n");
+        printf("Author: Ben Bailey\nHeap runs in O(nlogn) time because:\nInsert runs in O(1) time\nBuild runs in linear O(n) time\nEach extract call takes O(logn) time\nAs a result, since each extract call takes O(logn) time, n extract calls will be made to get the extreme value of the heap, therefore 'sorting' the heap.\n");
         return 0;
     }
-    if (argc != 2) {
+    else {
         for (int i=0; i<argc-1; i++) {
             // printf("right before the switch\n");
             switch (argv[i][1]) {
                 // printf("in switch\n");
-                case 'v':
-                    printf("Author: Ben Bailey\nWhy heapsort runs in nlogn time");
-                    exit(-1);
-                    break;
-
                 case 'i': //integer
                     // printf("found an integer arg\n");
                     data = 0;
